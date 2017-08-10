@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jabra Browser SDK</title>
+  <link href="main.css" rel="stylesheet" />
+  <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+</head>
+<body>
+<header>
+  <div class="wrapper center">
+    <h1 class="title">Jabra Browser SDK</h1>
+    <p>Library test</p>
+  </div>
+</header>
+<section id="section">
+  <div class="wrapper">
+    <h4>Description</h4>
+    <p>On this page you can try out the Jabra library. Callbacks are shown as toasts. Look at the source for an example on how to use the library.</p>
+    <br />
+    <h4>Basic:</h4>
+    <button id="ring" type="button">jabra.ring();</button>
+    <br/>
+    <button id="offhook" type="button">jabra.offHook();</button>
+    <button id="onhook" type="button">jabra.onHook();</button>
+    <br/>
+    <button id="mute" type="button">jabra.mute();</button>
+    <button id="unmute" type="button">jabra.unmute();</button>
+    <h4>Advanced (optional):</h4>
+    <button id="hold" type="button">jabra.hold();</button>
+    <button id="resume" type="button">jabra.resume();</button>
+    <h4>Device management (optional, only required for multi-device handling):</h4>
+    <button id="getactivedevice" type="button">jabra.getActiveDevice();</button>
+    <button id="getdevices" type="button">jabra.getDevices();</button>
+    <br/>
+    <button id="setactivedevice0" type="button">jabra.setActiveDevice(0);</button>
+    <button id="setactivedevice1" type="button">jabra.setActiveDevice(1);</button>
+    <button id="setactivedevice2" type="button">jabra.setActiveDevice(2);</button>
+    <br/>
+  </div>
+
+</section>
+  <footer>
+    <div class="wrapper center">
+      <p>GN Audio A/S</p>
+    </div>
+  </footer>
+  <script type="text/javascript" src="jabra.browser.integration-0.2.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+  <script type="text/javascript" src="main.js"></script>
+</body>
+</html>
