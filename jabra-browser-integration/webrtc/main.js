@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
         webrtc.leaveRoom();
         jabra.onHook();
         setTimeout(function () {
-          location.href = "https://jabra-browser-sdk.azurewebsites.net/webrtc/";
+          location.href = "https://gnaudio.github.io/jabra-browser-integration/webrtc/";
         }, 1 * 1000);
 
         //toastr.info("Callback: End call from the device");
