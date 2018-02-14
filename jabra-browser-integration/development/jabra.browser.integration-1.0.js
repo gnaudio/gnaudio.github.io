@@ -58,7 +58,7 @@ var jabra = {
           event.data.direction === "jabra-headset-extension-from-content-script") {
           if (duringInit === true) {
             duringInit = false;
-            if (event.data.error != null) {
+            if (event.data.error != null && event.data.error != undefined) {
               onFailure(event.data.error);
             } else {
               onSuccess();
