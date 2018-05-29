@@ -52,12 +52,12 @@ function webrtc(jabraDeviceInfo) {
     if (button) button.removeAttribute('disabled');
 
     if (jabraDeviceInfo && (jabraDeviceInfo.audioInputId || jabraDeviceInfo.audioOutputId)) {
-      inputStat.innerText = jabra.isDeviceSelectedForInput(stream) ? "Jabra input device sucessfully selected" : "Input device selection problem: Jabra input device could not be selected automatically in your browser - please do manually";
+      inputStat.innerText = jabra.isDeviceSelectedForInput(stream, jabraDeviceInfo) ? "Jabra input device '" + jabraDeviceInfo.label + "' sucessfully selected" : "Input device selection problem: Jabra input device " + jabraDeviceInfo.label + " could not be selected automatically in your browser - please do manually";
       
-      jabra.trySetDeviceOutput(localVideo).then(success => {
-        outputStat.innerText = success ? "Jabra output device sucessfully selected" : "Output device selection problem: Jabra output device could not be selected automatically in your browser - please do manually"
+      jabra.trySetDeviceOutput(localVideo, jabraDeviceInfo).then(success => {
+        outputStat.innerText = success ? "Jabra output device '" + jabraDeviceInfo.label + "' sucessfully selected" : "Output device selection problem: Jabra output device " + jabraDeviceInfo.label + " could not be selected automatically in your browser - please do manually"
       }).catch(function (err) {
-        outputStat.innerText = "Output device selection problem: " + err.name + ": " + err.message;
+        outputStat.innerText = "Output device selection problem for " + jabraDeviceInfo.label + ": " + err.name + ": " + err.message;
       })
     } else {
       inputStat.innerText = "No Jabra device found";
@@ -300,6 +300,9 @@ function webrtc(jabraDeviceInfo) {
 var self = this;
 
 // First find the jabra input device, then use this to initialize webrtc.
+// Note this involves asking for access to user media in advance (producing
+// a dummy stream that we throw away), as required by getDeviceInfo because 
+// of browser security rules.
 navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function(dummyStream) {
   return jabra.getDeviceInfo().then(function(info) {
       // Shutdown initial dummy stream (not sure it is really required but lets be nice).
@@ -311,5 +314,9 @@ navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function(
       self.webrtc(info);
   });
 }).catch(function(err) {
-  inputStat.innerText = "Input device selection problem: " + err.name + ": " + err.message;
+  if (err.name === "NotFoundError") {
+    inputStat.innerText = "Input device not accessible/found";
+  } else {
+    inputStat.innerText = "Input device selection problem: " + err.name + ": " + err.message;
+  }
 });
