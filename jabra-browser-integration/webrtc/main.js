@@ -2,7 +2,7 @@ var inputStat = document.getElementById("inputStat");
 var outputStat = document.getElementById("outputStat");
 var localVideo = document.getElementById('localVideo');
 
-function webrtc(jabraDeviceInfo) {
+function webrtcSetup(jabraDeviceInfo) {
   // grab the room from the URL
   var room = location.search && location.search.split('?')[1];
 
@@ -214,9 +214,23 @@ function webrtc(jabraDeviceInfo) {
     });
   }
 
+  return webrtc;
+}
+
+// Initialize when DOM loaded
+document.addEventListener('DOMContentLoaded', function () {
+  console.log("DOMContentLoaded");
+
+  // http://stackoverflow.com/a/4723302/600559
+  // Require secure connection
+  if (location.protocol != 'https:') {
+    location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+  }
+
+  var webrtc = null;
+    
   //Set mute/unmute icon and inform other peers about mute state...
   function SetMute(mute) {
-    //peers.local.micMuted = mute;
     if (mute) {
       $('#mute').removeClass('unmuted').addClass('muted');
       webrtc.sendDirectlyToAll('jabra', 'peer_muted', { mute: true });
@@ -226,97 +240,80 @@ function webrtc(jabraDeviceInfo) {
     }
   };
 
-  // DOM loaded
-  document.addEventListener('DOMContentLoaded', function () {
-
-    console.log("DOMContentLoaded");
-
-    // http://stackoverflow.com/a/4723302/600559
-    // Require secure connection
-    if (location.protocol != 'https:') {
-      location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
-    }
-
-    // Use the Jabra library
-    jabra.init(
-      function() {
-      },
-      function(msg) {
-        // Add nodes to show the message
-        var div = document.createElement("div");
-        var att = document.createAttribute("class");
-        att.value = "wrapper";
-        div.setAttributeNode(att);
-        div.innerHTML = msg;
-        var br = document.createElement("br");
-        var list = document.getElementById("subTitles");
-        list.insertBefore(br, list.childNodes[0]);
-        list.insertBefore(div, list.childNodes[0]);
-      },
-      function(req) {
-        if (req == jabra.requestEnum.mute) {
-          SetMute(true);
-          jabra.mute();
-        } else if (req == jabra.requestEnum.unmute) {
-          SetMute(false);
-          jabra.unmute();
-        } else if (req == jabra.requestEnum.deviceAttached) {
-          //toastr.info("Callback: A device was attached");
-        } else if (req == jabra.requestEnum.deviceDetached) {
-          //toastr.info("Callback: A device was detached");
-        } else if (req == jabra.requestEnum.acceptCall) {
-          //toastr.info("Callback: Accept call from the device");
-        } else if (req == jabra.requestEnum.rejectCall) {
-          //toastr.info("Callback: Reject call from the device");
-        } else if (req == jabra.requestEnum.endCall) {
-          webrtc.leaveRoom();
-          jabra.onHook();
-          setTimeout(function () {
-            location.href = "https://gnaudio.github.io/jabra-browser-integration/webrtc/";
-          }, 1 * 1000);
-
-          //toastr.info("Callback: End call from the device");
-        } else if (req == jabra.requestEnum.flash) {
-          //toastr.info("Callback: Flash from the device");
-        }
-      }
-    );
-
-
-    $('#mute').click(function () {
-      if ($('#mute').hasClass('muted')) {
-        SetMute(false);
-        jabra.unmute();
-      } else {
+  // Use the Jabra library
+  jabra.init(
+    function() {
+    },
+    function(msg) {
+      // Add nodes to show the message
+      var div = document.createElement("div");
+      var att = document.createAttribute("class");
+      att.value = "wrapper";
+      div.setAttributeNode(att);
+      div.innerHTML = msg;
+      var br = document.createElement("br");
+      var list = document.getElementById("subTitles");
+      list.insertBefore(br, list.childNodes[0]);
+      list.insertBefore(div, list.childNodes[0]);
+    },
+    function(req) {
+      if (req == jabra.requestEnum.mute) {
         SetMute(true);
         jabra.mute();
+      } else if (req == jabra.requestEnum.unmute) {
+        SetMute(false);
+        jabra.unmute();
+      } else if (req == jabra.requestEnum.deviceAttached) {
+        //toastr.info("Callback: A device was attached");
+      } else if (req == jabra.requestEnum.deviceDetached) {
+        //toastr.info("Callback: A device was detached");
+      } else if (req == jabra.requestEnum.acceptCall) {
+        //toastr.info("Callback: Accept call from the device");
+      } else if (req == jabra.requestEnum.rejectCall) {
+        //toastr.info("Callback: Reject call from the device");
+      } else if (req == jabra.requestEnum.endCall) {
+        webrtc.leaveRoom();
+        jabra.onHook();
+        setTimeout(function () {
+          location.href = window.location.origin + window.location.pathname;
+        }, 1 * 1000);
+
+        //toastr.info("Callback: End call from the device");
+      } else if (req == jabra.requestEnum.flash) {
+        //toastr.info("Callback: Flash from the device");
       }
-    });
+    }
+  );
 
-
-  }, false);
-}
-
-var self = this;
-
-// First find the jabra input device, then use this to initialize webrtc.
-// Note this involves asking for access to user media in advance (producing
-// a dummy stream that we throw away), as required by getDeviceInfo because 
-// of browser security rules.
-navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function(dummyStream) {
-  return jabra.getDeviceInfo().then(function(info) {
-      // Shutdown initial dummy stream (not sure it is really required but lets be nice).
-      dummyStream.getTracks().forEach(function(track) {
-          track.stop();
-      });
-
-      // Now that we have the IDs of our jabra device, startup webrtc
-      self.webrtc(info);
+  $('#mute').click(function () {
+    if ($('#mute').hasClass('muted')) {
+      self.SetMute(false);
+      jabra.unmute();
+    } else {
+      self.SetMute(true);
+      jabra.mute();
+    }
   });
-}).catch(function(err) {
-  if (err.name === "NotFoundError") {
-    inputStat.innerText = "Input device not accessible/found";
-  } else {
-    inputStat.innerText = "Input device selection problem: " + err.name + ": " + err.message;
-  }
-});
+  
+  // First find the jabra input device, then use this to initialize webrtc.
+  // Note this involves asking for access to user media in advance (producing
+  // a dummy stream that we throw away), as required by getDeviceInfo because 
+  // of browser security rules.
+  navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function(dummyStream) {
+    return jabra.getDeviceInfo().then(function(info) {
+        // Shutdown initial dummy stream (not sure it is really required but lets be nice).
+        dummyStream.getTracks().forEach(function(track) {
+            track.stop();
+        });
+
+        // Now that we have the IDs of our jabra device, startup webrtc
+        webrtc = self.webrtcSetup(info);
+    });
+  }).catch(function(err) {
+    if (err.name === "NotFoundError") {
+      inputStat.innerText = "Input device not accessible/found";
+    } else {
+      inputStat.innerText = "Input device selection problem: " + err.name + ": " + err.message;
+    }
+  });
+}, false);
