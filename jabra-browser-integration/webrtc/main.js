@@ -287,10 +287,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   $('#mute').click(function () {
     if ($('#mute').hasClass('muted')) {
-      self.SetMute(false);
+      SetMute(false);
       jabra.unmute();
     } else {
-      self.SetMute(true);
+      SetMute(true);
       jabra.mute();
     }
   });
