@@ -61,14 +61,14 @@ document.addEventListener('DOMContentLoaded', function () {
     jabra.resume();
   }
   document.getElementById('getactivedevice').onclick = function () {
-    jabra.getActiveDevice(
+    jabra.getActiveDevice().then(
       function (id) {
         alert(id);
       }
     );
   }
   document.getElementById('getdevices').onclick = function () {
-    jabra.getDevices(
+    jabra.getDevices().then(
       function(devices) {
         alert(devices);
       }
