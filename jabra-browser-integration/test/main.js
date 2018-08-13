@@ -38,29 +38,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
   initSDKBtn.onclick = () => {
     // Use the Jabra library
-    jabra.init(
-      function () { // Success:
-        toastr.info("Jabra library initialized successfully");
-        initSDKBtn.disabled = true;
-        unInitSDKBtn.disabled = false;
-        devicesBtn.disabled = false;
-      },
-      function(msg) { // Failure:
-        // Add nodes to show the message
-        var div = document.createElement("div");
-        var att = document.createAttribute("class");
-        att.value = "wrapper";
-        div.setAttributeNode(att);
-        div.innerHTML = msg;
-        var br = document.createElement("br");
-        var list = document.getElementById("section");
-        list.insertBefore(br, list.childNodes[0]);
-        list.insertBefore(div, list.childNodes[0]);
-      },
-      function (req) { // Notification:
+    jabra.init( (req) => { // Notification:
         messageArea.value = messageArea.value + "\n" + req;
       }
-    );
+    ).then(() => {
+      toastr.info("Jabra library initialized successfully");
+      initSDKBtn.disabled = true;
+      unInitSDKBtn.disabled = false;
+      devicesBtn.disabled = false;
+    }).catch((err) => {
+      // Add nodes to show the message
+      var div = document.createElement("div");
+      var att = document.createAttribute("class");
+      att.value = "wrapper";
+      div.setAttributeNode(att);
+      div.innerHTML = msg;
+      var br = document.createElement("br");
+      var list = document.getElementById("section");
+      list.insertBefore(br, list.childNodes[0]);
+      list.insertBefore(div, list.childNodes[0]);
+    });
   };
 
   unInitSDKBtn.onclick = () => {

@@ -3,21 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Use the Jabra library
   jabra.init(
-    function () {
-      toastr.info("Jabra library initialized successfully");
-    },
-    function(msg) {
-      // Add nodes to show the message
-      var div = document.createElement("div");
-      var att = document.createAttribute("class");
-      att.value = "wrapper";
-      div.setAttributeNode(att);
-      div.innerHTML = msg;
-      var br = document.createElement("br");
-      var list = document.getElementById("section");
-      list.insertBefore(br, list.childNodes[0]);
-      list.insertBefore(div, list.childNodes[0]);
-    },
     function (req) {
       if (req == jabra.requestEnum.mute) {
         toastr.info("Callback: The device requested to be muted");
@@ -37,7 +22,20 @@ document.addEventListener('DOMContentLoaded', function () {
         toastr.info("Callback: Flash from the device");
       }
     }
-  );
+  ).then(() => {
+    toastr.info("Jabra library initialized successfully");
+  }).catch((msg) => {
+    // Add nodes to show the error message
+    var div = document.createElement("div");
+    var att = document.createAttribute("class");
+    att.value = "wrapper";
+    div.setAttributeNode(att);
+    div.innerHTML = msg;
+    var br = document.createElement("br");
+    var list = document.getElementById("section");
+    list.insertBefore(br, list.childNodes[0]);
+    list.insertBefore(div, list.childNodes[0]);
+  });
 
   document.getElementById('ring').onclick = function () {
     jabra.ring();

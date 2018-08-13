@@ -242,21 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Use the Jabra library
   jabra.init(
-    function() {
-    },
-    function(msg) {
-      // Add nodes to show the message
-      var div = document.createElement("div");
-      var att = document.createAttribute("class");
-      att.value = "wrapper";
-      div.setAttributeNode(att);
-      div.innerHTML = msg;
-      var br = document.createElement("br");
-      var list = document.getElementById("subTitles");
-      list.insertBefore(br, list.childNodes[0]);
-      list.insertBefore(div, list.childNodes[0]);
-    },
-    function(req) {
+    (req) => {
       if (req == jabra.requestEnum.mute) {
         SetMute(true);
         jabra.mute();
@@ -283,7 +269,18 @@ document.addEventListener('DOMContentLoaded', function () {
         //toastr.info("Callback: Flash from the device");
       }
     }
-  );
+  ).catch( (msg) => {
+      // Add nodes to show the message
+      var div = document.createElement("div");
+      var att = document.createAttribute("class");
+      att.value = "wrapper";
+      div.setAttributeNode(att);
+      div.innerHTML = msg;
+      var br = document.createElement("br");
+      var list = document.getElementById("subTitles");
+      list.insertBefore(br, list.childNodes[0]);
+      list.insertBefore(div, list.childNodes[0]);
+  });
 
   $('#mute').click(function () {
     if ($('#mute').hasClass('muted')) {
