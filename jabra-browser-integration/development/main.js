@@ -1,28 +1,10 @@
-﻿// DOM loaded
+﻿/// <reference path="../../../jabra-browser-integration/src/JavaScriptLibrary/jabra.browser.integration-2.0.d.ts" />
+
+// DOM loaded
 document.addEventListener('DOMContentLoaded', function () {
 
   // Use the Jabra library
-  jabra.init(
-    function (req) {
-      if (req == jabra.requestEnum.mute) {
-        toastr.info("Callback: The device requested to be muted");
-      } else if (req == jabra.requestEnum.unmute) {
-        toastr.info("Callback: The device requested to be unmuted");
-      } else if (req == jabra.requestEnum.deviceAttached) {
-        toastr.info("Callback: A device was attached");
-      } else if (req == jabra.requestEnum.deviceDetached) {
-        toastr.info("Callback: A device was detached");
-      } else if (req == jabra.requestEnum.acceptCall) {
-        toastr.info("Callback: Accept call from the device");
-      } else if (req == jabra.requestEnum.rejectCall) {
-        toastr.info("Callback: Reject call from the device");
-      } else if (req == jabra.requestEnum.endCall) {
-        toastr.info("Callback: End call from the device");
-      } else if (req == jabra.requestEnum.flash) {
-        toastr.info("Callback: Flash from the device");
-      }
-    }
-  ).then(() => {
+  jabra.init().then(() => {
     toastr.info("Jabra library initialized successfully");
   }).catch((msg) => {
     // Add nodes to show the error message
@@ -35,6 +17,38 @@ document.addEventListener('DOMContentLoaded', function () {
     var list = document.getElementById("section");
     list.insertBefore(br, list.childNodes[0]);
     list.insertBefore(div, list.childNodes[0]);
+  });
+
+  jabra.addEventListener("mute", (event) => {
+    toastr.info("The device requested to be muted");
+  });
+
+  jabra.addEventListener("unmute", (event) => {
+    toastr.info("The device requested to be unmuted");
+  });
+
+  jabra.addEventListener("device attached", (event) => {
+    toastr.info("A device was attached");
+  });
+
+  jabra.addEventListener("device detached", (event) => {
+    toastr.info("A device was detached");
+  });
+
+  jabra.addEventListener("acceptcall", (event) => {
+    toastr.info("Accept call from the device");
+  });
+
+  jabra.addEventListener("rejectCall", (event) => {
+    toastr.info("Accept call from the device");
+  });
+
+  jabra.addEventListener("endcall", (event) => {
+    toastr.info("End call from the device");
+  });
+
+  jabra.addEventListener("flash", (event) => {
+    toastr.info("Flash from the device");
   });
 
   document.getElementById('ring').onclick = function () {

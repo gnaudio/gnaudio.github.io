@@ -1,3 +1,5 @@
+/// <reference path="../../../jabra-browser-integration/src/JavaScriptLibrary/jabra.browser.integration-2.0.d.ts" />
+
 var inputStat = document.getElementById("inputStat");
 var outputStat = document.getElementById("outputStat");
 var localVideo = document.getElementById('localVideo');
@@ -241,35 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   // Use the Jabra library
-  jabra.init(
-    (req) => {
-      if (req == jabra.requestEnum.mute) {
-        SetMute(true);
-        jabra.mute();
-      } else if (req == jabra.requestEnum.unmute) {
-        SetMute(false);
-        jabra.unmute();
-      } else if (req == jabra.requestEnum.deviceAttached) {
-        //toastr.info("Callback: A device was attached");
-      } else if (req == jabra.requestEnum.deviceDetached) {
-        //toastr.info("Callback: A device was detached");
-      } else if (req == jabra.requestEnum.acceptCall) {
-        //toastr.info("Callback: Accept call from the device");
-      } else if (req == jabra.requestEnum.rejectCall) {
-        //toastr.info("Callback: Reject call from the device");
-      } else if (req == jabra.requestEnum.endCall) {
-        webrtc.leaveRoom();
-        jabra.onHook();
-        setTimeout(function () {
-          location.href = window.location.origin + window.location.pathname;
-        }, 1 * 1000);
-
-        //toastr.info("Callback: End call from the device");
-      } else if (req == jabra.requestEnum.flash) {
-        //toastr.info("Callback: Flash from the device");
-      }
-    }
-  ).catch( (msg) => {
+  jabra.init().catch( (msg) => {
       // Add nodes to show the message
       var div = document.createElement("div");
       var att = document.createAttribute("class");
@@ -280,6 +254,24 @@ document.addEventListener('DOMContentLoaded', function () {
       var list = document.getElementById("subTitles");
       list.insertBefore(br, list.childNodes[0]);
       list.insertBefore(div, list.childNodes[0]);
+  });
+
+  jabra.addEventListener("mute", (event) => {
+    SetMute(true);
+    jabra.mute();
+  });
+
+  jabra.addEventListener("unmute", (event) => {
+    SetMute(false);
+    jabra.unmute();
+  });
+
+  jabra.addEventListener("endcall", (event) => {
+    webrtc.leaveRoom();
+    jabra.onHook();
+    setTimeout(function () {
+      location.href = window.location.origin + window.location.pathname;
+    }, 1 * 1000);
   });
 
   $('#mute').click(function () {

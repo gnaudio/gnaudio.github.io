@@ -1,4 +1,6 @@
-﻿// DOM loaded
+﻿/// <reference path="../../../jabra-browser-integration/src/JavaScriptLibrary/jabra.browser.integration-2.0.d.ts" />
+
+// DOM loaded
 document.addEventListener('DOMContentLoaded', function () {
   let initSDKBtn = document.getElementById('initSDKBtn');
   let unInitSDKBtn = document.getElementById('unInitSDKBtn');
@@ -25,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
   function isFunction(obj) {
     return !!(obj && obj.constructor && obj.call && obj.apply);
   };
-
-  let nonMethodSelectorMethods = ["init", "shutdown"];
+  
+  let nonMethodSelectorMethods = ["init", "shutdown", "getUserDeviceMedia", "getUserDeviceMediaExt", "isDeviceSelectedForInput", "trySetDeviceOutput"];
   Object.entries(jabra).forEach(([key, value]) => {
     if (isFunction(value) && !key.startsWith("_") && !nonMethodSelectorMethods.includes(key)) {
       var opt = document.createElement('option');
@@ -38,15 +40,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   initSDKBtn.onclick = () => {
     // Use the Jabra library
-    jabra.init( (req) => { // Notification:
-        messageArea.value = messageArea.value + "\n" + req;
-      }
-    ).then(() => {
+    jabra.init().then(() => {
       toastr.info("Jabra library initialized successfully");
       initSDKBtn.disabled = true;
       unInitSDKBtn.disabled = false;
       devicesBtn.disabled = false;
     }).catch((err) => {
+      messageArea.value=err;
+
       // Add nodes to show the message
       var div = document.createElement("div");
       var att = document.createAttribute("class");
@@ -59,6 +60,10 @@ document.addEventListener('DOMContentLoaded', function () {
       list.insertBefore(div, list.childNodes[0]);
     });
   };
+
+  jabra.addEventListener(/.*/, (event) => {
+    messageArea.value = messageArea.value + "\n Received event: " + JSON.stringify(event);
+  });
 
   unInitSDKBtn.onclick = () => {
     if (jabra.shutdown()) {
