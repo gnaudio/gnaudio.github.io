@@ -16,19 +16,22 @@ document.addEventListener('DOMContentLoaded', function () {
   let txtParam3 = document.getElementById('txtParam3');
   let txtParam4 = document.getElementById('txtParam4');
   let txtParam5 = document.getElementById('txtParam5');
-  let txtParam6 = document.getElementById('txtParam6');
 
   let clearMessageAreaBtn = document.getElementById('clearMessageAreaBtn');
-  let clearEventsAreaBtn = document.getElementById('clearEventsAreaBtn');
+  let clearErrorAreaBtn = document.getElementById('clearErrorAreaBtn');
 
   let messageArea = document.getElementById('messageArea');
-  let eventsArea = document.getElementById('eventsArea');
+  let errorArea = document.getElementById('errorArea');
 
   function isFunction(obj) {
     return !!(obj && obj.constructor && obj.call && obj.apply);
   };
   
-  let nonMethodSelectorMethods = ["init", "shutdown", "getUserDeviceMedia", "getUserDeviceMediaExt", "isDeviceSelectedForInput", "trySetDeviceOutput"];
+  let nonMethodSelectorMethods = ["init", "shutdown", 
+                                  "getUserDeviceMedia", "getUserDeviceMediaExt", 
+                                  "isDeviceSelectedForInput", "trySetDeviceOutput",
+                                  "addEventListener", "removeEventListener"
+                                 ];
   Object.entries(jabra).forEach(([key, value]) => {
     if (isFunction(value) && !key.startsWith("_") && !nonMethodSelectorMethods.includes(key)) {
       var opt = document.createElement('option');
@@ -41,28 +44,22 @@ document.addEventListener('DOMContentLoaded', function () {
   initSDKBtn.onclick = () => {
     // Use the Jabra library
     jabra.init().then(() => {
+      addStatusMessage("Jabra library initialized successfully")
       toastr.info("Jabra library initialized successfully");
       initSDKBtn.disabled = true;
       unInitSDKBtn.disabled = false;
       devicesBtn.disabled = false;
     }).catch((err) => {
-      messageArea.value=err;
-
-      // Add nodes to show the message
-      var div = document.createElement("div");
-      var att = document.createAttribute("class");
-      att.value = "wrapper";
-      div.setAttributeNode(att);
-      div.innerHTML = msg;
-      var br = document.createElement("br");
-      var list = document.getElementById("section");
-      list.insertBefore(br, list.childNodes[0]);
-      list.insertBefore(div, list.childNodes[0]);
+      addError(err);
     });
   };
 
   jabra.addEventListener(/.*/, (event) => {
-    messageArea.value = messageArea.value + "\n Received event: " + JSON.stringify(event);
+    if (event.error) {
+       addError(event);
+    } else {
+       addEventMessage(event);
+    }
   });
 
   unInitSDKBtn.onclick = () => {
@@ -80,18 +77,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     jabra.getDevices().then((devices) => {
-      let devicesAry = devices.split(",");
-
-      for (var i = 0; i < devicesAry.length; i += 2){
+      Object.entries(devices).forEach(([key, value]) => {
         var opt = document.createElement('option');
-        opt.value = devicesAry[i];
-        opt.innerHTML = devicesAry[i+1];
+        opt.value = key;
+        opt.innerHTML = value;
         deviceSelector.appendChild(opt);
-      }
+      });
 
       invokeApiBtn.disabled = false;
     }).catch((error) => {
-      messageArea.value="ERROR " + error;
+      addError(error);
     });
   };
 
@@ -101,9 +96,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let result = apiFunc.call(jabra, txtParam1.value, txtParam2.value, txtParam3.value, txtParam4.value, txtParam5.value);
     if (result && result instanceof Promise) {
       result.then((value) => {
-        messageArea.value = JSON.stringify(value, null, 2);
+        addResponseMessage(value);
       }).catch((error) => {
-        messageArea.value = "ERROR " + error;
+        addError(error);
       });
     }
   };
@@ -112,8 +107,28 @@ document.addEventListener('DOMContentLoaded', function () {
     messageArea.value="";
   };
 
-  clearEventsAreaBtn.onclick = () => {
-    eventsArea.value="";
+  clearErrorAreaBtn.onclick = () => {
+    errorArea.value="";
   };
+
+  function addError(err) {  
+    let txt = (typeof err === 'string' || err instanceof String) ? "errorstring: " + err : "error object: " + JSON.stringify(err, null, 2);
+    errorArea.value = errorArea.value + "\n" + txt;
+  }
+
+  function addStatusMessage(msg) {
+    let txt = (typeof msg === 'string' || msg instanceof String) ? msg : "Status: " + JSON.stringify(msg, null, 2);
+    messageArea.value = messageArea.value + "\n" + txt;
+  }
+
+  function addResponseMessage(msg) {
+    let txt = (typeof msg === 'string' || msg instanceof String) ? "response string: " + msg : "response object: " + JSON.stringify(msg, null, 2);
+    messageArea.value = messageArea.value + "\n" + txt;
+  }
+
+  function addEventMessage(msg) {
+    let txt = (typeof msg === 'string' || msg instanceof String) ? "event string: " + msg : "event object: " + JSON.stringify(msg, null, 2);
+    messageArea.value = messageArea.value + "\n" + txt;
+  }
 
 }, false);
