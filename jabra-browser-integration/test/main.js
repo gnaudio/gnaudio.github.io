@@ -1,4 +1,4 @@
-﻿/// <reference path="../../../jabra-browser-integration/src/JavaScriptLibrary/jabra.browser.integration-2.0.d.ts" />
+﻿/// <reference path="../jabra.browser.integration-2.0.d.ts" />
 
 // DOM loaded
 document.addEventListener('DOMContentLoaded', function () {
@@ -83,12 +83,30 @@ document.addEventListener('DOMContentLoaded', function () {
         deviceSelector.remove(0);
       }
 
-      Object.entries(devices).forEach(([key, value]) => {
-        var opt = document.createElement('option');
-        opt.value = key;
-        opt.innerHTML = value;
-        deviceSelector.appendChild(opt);
-      });
+      // Normally one should not need to check for legacy_result, but for this
+      // special test page we would like it to work with older extensions/chromehosts
+      // while at the same time using newest JS API. This is not normally
+      // supported so we need to deal with legazy result formats as well.
+      // Do not do this for normal pages - upgrade dependencies or use older API.
+      if (devices.legacy_result) {
+        let devicesAry = devices.legacy_result.split(",");
+        for (var i = 0; i < devicesAry.length; i += 2){
+          Object.entries(devices).forEach(([key, value]) => {
+            var opt = document.createElement('option');
+            opt.value = devicesAry[i];
+            opt.innerHTML = devicesAry[i+1];
+            deviceSelector.appendChild(opt);
+          });
+        }
+      } else {
+        // Decode device information normally - recommended way going forward.
+        Object.entries(devices).forEach(([key, value]) => {
+          var opt = document.createElement('option');
+          opt.value = key;
+          opt.innerHTML = value;
+          deviceSelector.appendChild(opt);
+        });
+      }
 
       if (deviceSelector.options.length == 0) {
         addError("No devices found");
