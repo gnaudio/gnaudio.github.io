@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let devicesBtn = document.getElementById('devicesBtn');
   let deviceSelector = document.getElementById('deviceSelector');
+  let changeActiveDeviceBtn = document.getElementById('changeActiveDeviceBtn');
 
   let methodSelector = document.getElementById('methodSelector');
   let invokeApiBtn = document.getElementById('invokeApiBtn');
@@ -49,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
       initSDKBtn.disabled = true;
       unInitSDKBtn.disabled = false;
       devicesBtn.disabled = false;
+      invokeApiBtn.disabled = false;
     }).catch((err) => {
       addError(err);
     });
@@ -68,15 +70,19 @@ document.addEventListener('DOMContentLoaded', function () {
       unInitSDKBtn.disabled = true;
       devicesBtn.disabled = true;
       invokeApiBtn.disabled = true;
+      changeActiveDeviceBtn.disabled = true;
+      while (deviceSelector.options.length > 0) {                
+        deviceSelector.remove(0);
+      }
     }
   };
 
   devicesBtn.onclick = () => {
-    while (deviceSelector.options.length > 0) {                
-      deviceSelector.remove(0);
-    }
-
     jabra.getDevices().then((devices) => {
+      while (deviceSelector.options.length > 0) {
+        deviceSelector.remove(0);
+      }
+
       Object.entries(devices).forEach(([key, value]) => {
         var opt = document.createElement('option');
         opt.value = key;
@@ -84,10 +90,19 @@ document.addEventListener('DOMContentLoaded', function () {
         deviceSelector.appendChild(opt);
       });
 
-      invokeApiBtn.disabled = false;
+      if (deviceSelector.options.length == 0) {
+        addError("No devices found");
+      } else {
+        changeActiveDeviceBtn.disabled = false;
+      }
     }).catch((error) => {
       addError(error);
     });
+  };
+  
+  changeActiveDeviceBtn.onclick = () => {
+    let id = deviceSelector.value;
+    jabra.setActiveDevice(id);
   };
 
   invokeApiBtn.onclick = () => {

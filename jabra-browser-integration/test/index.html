@@ -34,23 +34,28 @@
             <td>
                 <input id="devicesBtn" type="button" value="Get Devices" disabled="true"/>   
             </td>
+            <td>
+                <div>   
+                    <select id="deviceSelector"> 
+                    </select>   
+                </div>   
+            </td>
+            <td>
+                 <input id="changeActiveDeviceBtn" type="button" value="Set as active" disabled="true"/>
+            </td>
         </tr>
     </table>
+
+    <p>&nbsp;</p>
         
     <table>
         <tr>
             <td>
-                <div>   
-                  <select id="deviceSelector"> 
-                      <option>Please press button to get devices</option>  
-                  </select>   
-                </div>   
+                <label for="methodSelector">Select API call to invoke:</label>
             </td>
             <td>
-                <div>   
-                  <select id="methodSelector">                  
-                  </select>   
-                </div>
+                <select id="methodSelector">                  
+                </select>   
             </td>
             <td>
                 <input id="invokeApiBtn" type="button" value="Invoke" disabled="true"/>
