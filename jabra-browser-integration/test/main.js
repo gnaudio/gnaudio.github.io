@@ -43,6 +43,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   initSDKBtn.onclick = () => {
+    // Make sure we log anything by default unless overridden by the user.
+    // Useful for testing with old <=0.5 versions.
+    jabra.logLevel = 255;
+
     // Use the Jabra library
     jabra.init().then(() => {
       addStatusMessage("Jabra library initialized successfully")
