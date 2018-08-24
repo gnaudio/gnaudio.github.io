@@ -11,8 +11,9 @@
 <a href="https://github.com/gnaudio/jabra-browser-integration"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
 <header>
   <div class="wrapper center">
-    <h1 class="title">Jabra Browser Api Test</h1>
-    <p>Library test</p>
+    <h1 class="title">Jabra Browser API Test</h1>
+    <p><span>Testing client API v</span><span id="clientlibVersionTxt"></span><span id="otherVersionTxt"></span></p>
+    <p><span id="browserAndOsVersionTxt"></span></p>
   </div>
 </header>
 <section id="section">
@@ -24,6 +25,13 @@
             </td>
             <td>
                 <input id="unInitSDKBtn" type="button" value="UnInit" disabled="true"/>
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;</td>
+            <td>
+                <input id="checkInstallBtn" type="button" value="CheckInstall" disabled="true"/>
+            </td>
+            <td>
+                 <div id="installCheckResult"></div>
             </td>
         </tr>    
     </table>
@@ -110,7 +118,7 @@
               Message/event output: <input id="clearMessageAreaBtn" type="button" value="Clear" />   
             </td>
             <td>
-              Error Output:   <input id="clearErrorAreaBtn" type="button" value="Clear" />   
+              Error Output: <input id="clearErrorAreaBtn" type="button" value="Clear" />   
             </td>
         </tr>
         <tr>
@@ -119,6 +127,22 @@
             </td>
             <td>
               <textarea id="errorArea" rows="10" cols="50"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                API and extension content page log (open chrome developer tools for more details):
+                <input id="clearlogAreaBtn" type="button" value="Clear" /><br/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+              <textarea id="logArea" rows="10" cols="100"></textarea>
+              <br/>
+              Nb. See also: 
+              1) Extension background page console log.
+              2) Native chromehost log file.
+              3) Native SDK log file.
             </td>
         </tr>
     </table>         
