@@ -1,4 +1,4 @@
-﻿/// <reference path="../jabra.browser.integration-2.0.d.ts" />
+﻿/// <reference path="../../JavaScriptLibrary/jabra.browser.integration-2.0.d.ts" />
 
 // DOM loaded
 document.addEventListener('DOMContentLoaded', function () {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('getdevices').onclick = function () {
     jabra.getDevices().then(
       function(devices) {
-        alert(devices);
+        alert(JSON.stringify(devices));
       }
     );
   }

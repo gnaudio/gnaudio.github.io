@@ -35,7 +35,7 @@ declare namespace jabra {
         stream: MediaStream;
         deviceInfo: DeviceInfo;
     }
-    type EventName = "mute" | "unmute" | "device attached" | "device detached" | "acceptcall" | "endcall" | "reject" | "flash" | "error";
+    type EventName = "mute" | "unmute" | "device attached" | "device detached" | "acceptcall" | "endcall" | "reject" | "flash" | "online" | "offline" | "error";
     /**
      * An enumeration of codes for various device events.
      */
@@ -54,6 +54,8 @@ declare namespace jabra {
          * A device has been removed.
          */
         deviceDetached = 7,
+        online = 8,
+        offline = 9,
         error = 255
     }
     interface DeviceInfo {
