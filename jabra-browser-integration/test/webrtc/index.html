@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Jabra Browser Integration</title>
+    <link href="main.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <a href="https://github.com/gnaudio/jabra-browser-integration"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+    <header>
+      <div class="wrapper center">
+        <h1 class="title">Jabra Browser Integration</h1>
+        <p id="title2">WebRTC demo with autoselection of Jabra device</p>
+      </div>
+    </header>
+    <section id="section">
+      <div class="wrapper">
+        <h4 id="title">Start a new <a href="https://webrtc.org/">WebRTC</a> Call
+        </h4>
+        <form id="createRoom">
+          <input id="sessionInput"/>
+          <button disabled type="submit">Create it!</button>
+        </form>
+        <div id="subTitles">
+          <p id="subTitle1"></p>
+          <p id="subTitle2"></p>
+        </div>
+        <hr>
+        <div class="container webrtc-ui">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="videoContainer">
+                <video id="localVideo" style="height: 150px;" oncontextmenu="return false;"></video>
+                <meter id="localVolume" class="volume" min="-45" max="-20" high="-25" low="-40"></meter>
+                <div id="mute" class="unmuted" style="display: none"></div>
+              </div>
+              <div id="localScreenContainer" class="videoContainer margin-ui">
+              </div>
+              <div id="remotes" class="margin-ui"></div>
+            </div>
+            <div class="col-md-4">
+              <section class="section">
+                <h3>Boom arm                  
+                  <img id="boomArmKnown" class="lastRightSideIcon" src="icons/Boom arm.svg" alt="Jabra Boom arm" height="24" style="display: inline-block;">
+                  <img id="boomArmUnknown" class="lastRightSideIcon" src="icons/Boom arm unknown.svg" alt="Jabra Boom arm" height="24" style="display: none;">
+                  <img id="noteBoomArmProblem" class="rightSideIcon" src="icons/Important.svg" alt="Warning" height="24" style="display: none">
+                </h3>
+                <span id="boomArm">
+                  <p id="boomArmStatusText">Position unknown, please wait</p>              
+                </span>
+              </section>
+              <div>&nbsp;</div>
+              <div>&nbsp;</div>
+              <div>&nbsp;</div>
+              <div>&nbsp;</div>
+              <section class="section">
+                <h3>
+                  Background noise
+                  <img id="noteNoiseProblem" class="rightSideIcon" src="icons/Important.svg" alt="Warning" height="24" style="display: none">
+                  <img id="NoiseKnown" class="lastRightSideIcon" src="icons/Background noise.svg" alt="Jabra background noise" height="24" style="display: none">
+                  <img id="NoiseUnknown" class="lastRightSideIcon" src="icons/Background noise unknown.svg" alt="Jabra background noise" height="24" style="display: inline-block">
+                </h3>
+                <span id="backgroundNoise">
+                  <div id="barParent">
+                    <div id="noiseBar"></div>
+                  </div>                   
+                  <canvas id="noiseChart" class="noiseChartArea"></canvas>
+                </span>
+              </section>
+            </div>
+            <div class="col-md-4">
+              <section class="section">
+                <h3>Audio exposure
+                  <img id="ExposureKnown" class="lastRightSideIcon" src="icons/Background noise.svg" alt="Jabra exposure noise" height="24" style="display: none" />
+                  <img id="ExposureUnknown" class="lastRightSideIcon" src="icons/Background noise unknown.svg" alt="Jabra exposure noise" height="24" style="display: inline-block" />
+                </h3>
+                
+                <span id="exposure">
+                  <div id="barParent">
+                    <div id="exposureBar"></div>
+                  </div>
+                  <canvas id="exposureChart" class="exposureChartArea"></canvas>
+                </span>
+              </section>
+              <section class="section">
+                  <h3>Call overview</h3>
+                  <span id="callOverview">
+                    <div class="row call-overview">
+                      <div class="col-md-7 overviewLegends">
+                        <div>
+                          <img id="agentTalkingOff" class="overviewLegend" src="icons/dots/Yellow.svg" alt="Yellow" height="8">
+                          <img id="agentTalkingOn" class="overviewLegend" src="icons/dots/Yellow-selected.svg" alt="Yellow" height="8" style="display: none">
+                          <label id="agentTalkingLabel">Agent (You) talking</label>
+                        </div>
+    
+                        <div>
+                          <img id="contactTalkingOff" class="overviewLegend" src="icons/dots/Green.svg" alt="Green" height="8">
+                          <img id="contactTalkingOn" class="overviewLegend" src="icons/dots/Green-selected.svg" alt="Yellow" height="8" style="display: none">
+                          <label id="contactLabel">Contact talking</label>
+                        </div>
+    
+                        <div>
+                          <img id="crossTalkOff" class="overviewLegend" src="icons/dots/Red.svg" alt="Red" height="8">
+                          <img id="crossTalkOn" class="overviewLegend" src="icons/dots/Red-selected.svg" alt="Yellow" height="8" style="display: none">
+                          <label id="crossTalkLabel">Cross talk</label>
+                        </div>
+                        
+                        <div>
+                          <img id="silenceOff" class="overviewLegend" src="icons/dots/Grey.svg" alt="Grey" height="8">
+                          <img id="silenceOn" class="overviewLegend" src="icons/dots/Grey-selected.svg" alt="Yellow" height="8" style="display: none">
+                          <label id="silenceLabel">Silence</label>
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                          <canvas id="overviewChart" width="175" height="100" style="display: block; height: 80px; width: 140px;"></canvas>
+                      </div>
+                    </div>
+                  </span>
+                </section>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div id="inputStat"></div>
+        <div id="outputStat"></div>
+        <div>
+            <br/>
+            <i><small>Note: You must have your Jabra device connected prior to loading this page. If missing, connect device and reload page by pressing F5.</small></i>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="wrapper center">
+        <p>GN Audio A/S</p>
+      </div>
+    </footer>
+    <script type="text/javascript" src="../../JavaScriptLibrary/jabra.browser.integration-2.0.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="webrtc-latest-v2.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>
