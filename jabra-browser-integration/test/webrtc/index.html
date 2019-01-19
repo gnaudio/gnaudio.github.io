@@ -42,7 +42,7 @@
               <div id="remotes" class="margin-ui"></div>
             </div>
             <div class="col-md-4">
-              <section class="section">
+              <section class="section" id="boomArmSection" style="display: none">
                 <h3>Boom arm                  
                   <img id="boomArmKnown" class="lastRightSideIcon" src="icons/Boom arm.svg" alt="Jabra Boom arm" height="24" style="display: inline-block;">
                   <img id="boomArmUnknown" class="lastRightSideIcon" src="icons/Boom arm unknown.svg" alt="Jabra Boom arm" height="24" style="display: none;">
@@ -56,7 +56,7 @@
               <div>&nbsp;</div>
               <div>&nbsp;</div>
               <div>&nbsp;</div>
-              <section class="section">
+              <section class="section" id="backgroundNoiseSection" style="display: none">
                 <h3>
                   Background noise
                   <img id="noteNoiseProblem" class="rightSideIcon" src="icons/Important.svg" alt="Warning" height="24" style="display: none">
@@ -72,7 +72,7 @@
               </section>
             </div>
             <div class="col-md-4">
-              <section class="section">
+              <section class="section" id="audioExposureSection" style="display: none">
                 <h3>Audio exposure
                   <img id="ExposureKnown" class="lastRightSideIcon" src="icons/Background noise.svg" alt="Jabra exposure noise" height="24" style="display: none" />
                   <img id="ExposureUnknown" class="lastRightSideIcon" src="icons/Background noise unknown.svg" alt="Jabra exposure noise" height="24" style="display: inline-block" />
@@ -85,7 +85,7 @@
                   <canvas id="exposureChart" class="exposureChartArea"></canvas>
                 </span>
               </section>
-              <section class="section">
+              <section class="section"  id="callOveriewSection" style="display: none">
                   <h3>Call overview</h3>
                   <span id="callOverview">
                     <div class="row call-overview">
@@ -124,12 +124,31 @@
           </div>
         </div>
         <hr>
-        <div id="inputStat"></div>
-        <div id="outputStat"></div>
-        <div>
+        <div id="inputStatTitle">Jabra input device</div>
+        <div id="inputStat">No Jabra device found</div>
+        <hr>
+        <div id="outputStatTitle">Jabra output device</div>
+        <div id="outputStat">No Jabra device found</div>
+        <hr>
+        <div id="connectedDevices" style="display: none;">
+          <div class="row">
+            <div class="col-md-12">
+              <p style="font-weight: bold;">Jabra Devices connected:</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <select name="devicesConnected" id="connectedDevicesList" onchange="selectedDeviceCheck()"></select>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn btn-primary selectDevice" id="selectDevice" onclick="selectActiveDevice()">Select</button>
+              </div>
+          </div>
+        </div>
+        <!-- <div>
             <br/>
             <i><small>Note: You must have your Jabra device connected prior to loading this page. If missing, connect device and reload page by pressing F5.</small></i>
-        </div>
+        </div> -->
       </div>
     </section>
     <footer>
