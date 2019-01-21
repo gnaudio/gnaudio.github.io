@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const noDeviceFound = document.getElementById('noDeviceFound');
 
+  let buttonClicked = 0;
+  let onHold = 0;
+
   function showError(err) {
     let msg;
     if (err.name === "CommandError" && err.errmessage === "Unknown cmd" && err.command === "getinstallinfo" ) {
@@ -62,10 +65,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   jabra.addEventListener("mute", (event) => {
     toastr.info("The device requested to be muted");
+    if (buttonClicked) {
+      buttonClicked = 0;
+    } else {
+      jabra.mute();
+    }
   });
 
   jabra.addEventListener("unmute", (event) => {
     toastr.info("The device requested to be unmuted");
+    if (buttonClicked) {
+      buttonClicked = 0;
+    } else {
+      jabra.unmute();
+    }
   });
 
   jabra.addEventListener("device attached", (event) => {
@@ -78,18 +91,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
   jabra.addEventListener("acceptcall", (event) => {
     toastr.info("Accept call from the device");
+    if (buttonClicked) {
+      buttonClicked = 0;
+    } else {
+      jabra.offHook();
+    }
   });
 
   jabra.addEventListener("reject", (event) => {
     toastr.info("Reject call from the device");
+    if (buttonClicked) {
+      buttonClicked = 0;
+    } else {
+      jabra.onHook();
+    }
   });
 
   jabra.addEventListener("endcall", (event) => {
     toastr.info("End call from the device");
+    if (buttonClicked) {
+      buttonClicked = 0;
+    } else {
+      jabra.onHook();
+    }
   });
 
   jabra.addEventListener("flash", (event) => {
     toastr.info("Flash from the device");
+    if (buttonClicked) {
+      buttonClicked = 0;
+    } else {
+      if (!onHold) {
+        onHold = 1;
+        jabra.hold();
+      } else {
+        onHold = 0;
+        jabra.resume();
+      }
+    }
   });
 
   ringBtn.onclick = function () {
@@ -97,26 +136,32 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   offhookBtn.onclick = function () {
+    buttonClicked = 1;
     jabra.offHook();
   }
 
   onhookBtn.onclick = function () {
+    buttonClicked = 1;
     jabra.onHook();
   }
 
   muteBtn.onclick = function () {
+    buttonClicked = 1;
     jabra.mute();
   }
 
   unmuteBtn.onclick = function () {
+    buttonClicked = 1;
     jabra.unmute();
   }
 
   holdBtn.onclick = function () {
+    buttonClicked = 1;
     jabra.hold();
   }
 
   resumeBtn.onclick = function () {
+    buttonClicked = 1;
     jabra.resume();
   }
 
