@@ -720,10 +720,6 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (v !== null && v !== undefined) {
               logs.push(v.toString())
             }
-
-            if(v.toString().indexOf('error') >= 0) {
-              addResponseMessage('error');
-            }
             updateLogArea();
           }
         }
@@ -762,11 +758,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function getOS() {
-    if (window.navigator.platform.toLowerCase().indexOf("win") >= 0) {
+    if (window.navigator.userAgent.indexOf("Windows")) {
       return "Windows"
-    } else if (window.navigator.platform.toLowerCase().indexOf("mac") >= 0) {
+    } else if (window.navigator.userAgent.indexOf("Mac")) {
       return "MacOS"
-    } else if (window.navigator.platform.toLowerCase().indexOf("linux") >= 0) {
+    } else if (window.navigator.userAgent.indexOf("Linux")) {
       return "Linux";
     } else {
       return "?"
