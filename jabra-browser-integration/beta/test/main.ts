@@ -374,24 +374,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
 
+  // Stop stress testing. Leave button with status if failure until repeated stop.
+  function stopStressInvokeApi(success: boolean) {
+    if (stressInterval) {
+        clearInterval(stressInterval);
+        stressInterval = undefined;
+    }
+    if (success) {
+        stressInvokeApiBtn.value = "Invoke repeatedly (stress test)";
+    }
+  }
+
   // Invoke API repeatedly:
-  stressInvokeApiBtn.onclick = () => {
-      // Stop stress testing. Leave button with status if failure until repeated stop.
-      function stopStressInvokeApi(success: boolean) {
-        if (stressInterval) {
-            clearInterval(stressInterval);
-            stressInterval = undefined;
-        }
-        if (success) {
-            stressInvokeApiBtn.value = "Invoke repeatedly (stress test)";
-        }
-      }
-      
+  stressInvokeApiBtn.onclick = () => {      
       let sucess = true;
-      let stopped = false;
       if (stressInvokeApiBtn.value.toLowerCase().includes("stop")) {
         stopStressInvokeApi(sucess);
-        stopped = true;
       } else {
         const funcMeta = getCurrentMethodMeta();
         const currentApiObject = getCurrentApiClassObject(); 
@@ -406,17 +404,23 @@ document.addEventListener('DOMContentLoaded', function () {
           if (sucess && stressInterval && funcMeta) {
             try {
               invokeSelectedApi(currentApiObject, funcMeta).then( () => {
-                stressInvokeApiBtn.value = "Stop stress test (" + funcMeta!.name + " success count # " + stressInvokeCount + ")";
-                ++stressInvokeCount!;
+                if (stressInterval) {
+                  stressInvokeApiBtn.value = "Stop stress test (" + funcMeta!.name + " success count # " + stressInvokeCount + ")";
+                  ++stressInvokeCount!;
+                }
               }).catch( () => {
-                stressInvokeApiBtn.value = "Stop stress test (" + funcMeta!.name + " failed at count # " + stressInvokeCount + ")";
                 sucess = false;
-                stopStressInvokeApi(sucess);
+                if (stressInterval) {
+                  stressInvokeApiBtn.value = "Stop stress test (" + funcMeta!.name + " failed at count # " + stressInvokeCount + ")";
+                  stopStressInvokeApi(sucess);
+                }
               });
             } catch (err) {
-              stressInvokeApiBtn.value = "Stop stress test (" + funcMeta!.name + " failed with exception at count # " + stressInvokeCount + ")";
               sucess = false;
-              stopStressInvokeApi(sucess);
+              if (stressInterval) {
+                stressInvokeApiBtn.value = "Stop stress test (" + funcMeta!.name + " failed with exception at count # " + stressInvokeCount + ")";
+                stopStressInvokeApi(sucess);
+              }
             }
           }
         }, stressWaitInterval);
@@ -479,15 +483,17 @@ document.addEventListener('DOMContentLoaded', function () {
           currentDeviceAnalyticsSingleton?.stop();
           currentDeviceAnalyticsSingleton = null;
           toastr.info("Jabra library initialized successfully");
-        } else if (apiFuncName === "shutdown") {
+        } else if (apiFuncName === "shutdown") {          
           initSDKBtn.disabled = false;
           unInitSDKBtn.disabled = true;
           checkInstallBtn.disabled = true;
           devicesBtn.disabled = true;
-          invokeApiBtn.disabled = true;
-          stressInvokeApiBtn.disabled = true;
           setupUserMediaPlaybackBtn.disabled = true;
   
+          // Allow post shutdown invocations for testing purposes:
+          // stressInvokeApiBtn.disabled = true;
+          // invokeApiBtn.disabled = true;
+
           while (deviceSelector.options.length > 0) {                
             deviceSelector.remove(0);
           }
@@ -741,11 +747,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function getOS() {
-    if (window.navigator.userAgent.indexOf("Windows")) {
+    if (window.navigator.userAgent.indexOf("Windows")>=0) {
       return "Windows"
-    } else if (window.navigator.userAgent.indexOf("Mac")) {
+    } else if (window.navigator.userAgent.indexOf("Mac")>=0) {
       return "MacOS"
-    } else if (window.navigator.userAgent.indexOf("Linux")) {
+    } else if (window.navigator.userAgent.indexOf("Linux")>=0) {
       return "Linux";
     } else {
       return "?"
