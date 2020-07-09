@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Softphone example with Jabra device</title>
+  <link href="main.css" rel="stylesheet" />
+  <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="./assets/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<a href="https://github.com/gnaudio/jabra-developer-examples"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+<header>
+  <div class="wrapper center">
+    <h1 class="title">Softphone example</h1>
+    <p>Simple softphone example</p>
+  </div>
+</header>
+<section id="section">
+  <div id="subTitles">
+    <p id="subTitle1"></p>
+    <p id="subTitle2"></p>
+  </div>
+
+  <div class="wrapper">
+    <audio id="player" muted autoplay></audio>
+    <table>
+      <tr> 
+        <td>
+          <button id="startOutgoingCall" disabled="true">Start outgoing call</button>
+          <button id="simulateIncommingCall" disabled="true">Start simulating incomming call</button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button id="answerIncommingCall" style="display: none">Answer call</button>
+          <button id="rejectIncommingCall" style="display: none">Reject call</button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button id="muteUnmute" style="display: none">MUTE</button>
+          <button id="holdResume" style="display: none">HOLD</button>
+          <button id="hangUp" style="display: none">Hang up</button>
+        </td>
+      </tr>
+    </table>
+
+    <div id="statusMessage"></div>
+    <br/>
+    <br/>
+  </div>
+</section>
+<footer>
+  <div class="wrapper center">
+    <p>GN Audio A/S</p>
+  </div>
+</footer>
+<script type="text/javascript" src="jabra.browser.integration-3.0.js"></script>
+<script type="text/javascript" src="softphone.guihelper.js"></script>
+<script type="text/javascript" src="softphone.stub.js"></script>
+<script type="text/javascript" src="softphone.jabra.js"></script>
+</body>
+</html>
