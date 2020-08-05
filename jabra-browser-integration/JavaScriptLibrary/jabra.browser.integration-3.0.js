@@ -166,7 +166,7 @@
   /**
    * Version of this javascript api (should match version number in file apart from possible alfa/beta designator).
    */
-  var apiVersion = "3.0.0-beta.9";
+  var apiVersion = "3.0.0-beta.11";
   /**
    * Is the current version a beta ?
    */
@@ -178,10 +178,10 @@
 
   var prodExtensionId = "okpeabepajdgiepelmhkfhkjlhhmofma";
   /**
-   * Id of beta release of browser plugin.
+   * Id of beta release of browser plugin (no chrome extension changes in current beta, hence set to prod id)
    */
 
-  var betaExtensionId = "igcbbdnhomedfadljgcmcfpdcoonihfe";
+  var betaExtensionId = prodExtensionId;
   /**
    * Names of command response events.
    */
@@ -1036,6 +1036,7 @@
   /**
    * Configure an audio html element on a webpage to use jabra audio device as speaker output. Returns a promise with boolean success status.
    * The deviceInfo argument must come from getDeviceInfo or getUserDeviceMediaExt calls.
+   * Note: for headsets connected via USB-dongle, call the method on the dongle
    */
 
 
@@ -1166,9 +1167,9 @@
 
   function fillInMatchingMediaInfo(deviceInfo, potentialDongleDeviceInfos, mediaDevices) {
     function findMatchFromProductId(deviceInfo, mediaDeviceNameCandidates) {
-      var explicitStr = "(0b0e:" + deviceInfo.productID.toString(16) + ")";
+      var hexId = deviceInfo.productID.toString(16).padStart(4, "0");
       return mediaDeviceNameCandidates.findIndex(function (c) {
-        return c.indexOf(explicitStr) >= 0;
+        return c.indexOf("(0b0e:" + hexId) >= 0;
       });
     }
 

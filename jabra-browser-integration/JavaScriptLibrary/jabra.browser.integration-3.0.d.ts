@@ -3,7 +3,7 @@
 /**
  * Version of this javascript api (should match version number in file apart from possible alfa/beta designator).
  */
-export declare const apiVersion = "3.0.0-beta.9";
+export declare const apiVersion = "3.0.0-beta.11";
 /**
  * Contains information about installed components.
  */
@@ -479,6 +479,7 @@ export declare function getInstallInfo(): Promise<InstallInfo>;
 /**
  * Configure an audio html element on a webpage to use jabra audio device as speaker output. Returns a promise with boolean success status.
  * The deviceInfo argument must come from getDeviceInfo or getUserDeviceMediaExt calls.
+ * Note: for headsets connected via USB-dongle, call the method on the dongle
  */
 export declare function trySetDeviceOutput(audioElement: HTMLMediaElement, deviceInfo: DeviceInfo): Promise<boolean>;
 /**
