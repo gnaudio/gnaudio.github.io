@@ -136,7 +136,7 @@ https://github.com/gnaudio/jabra-browser-integration
 
 MIT License
 
-Copyright (c) 2017 GN Audio A/S (Jabra)
+Copyright (c) 2020 GN Audio A/S (Jabra)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -160,7 +160,7 @@ SOFTWARE.
 /**
  * Version of this javascript api (should match version number in file apart from possible alfa/beta designator).
  */
-var apiVersion = "3.0.0-beta.11";
+var apiVersion = "3.0.0";
 /**
  * Is the current version a beta ?
  */
